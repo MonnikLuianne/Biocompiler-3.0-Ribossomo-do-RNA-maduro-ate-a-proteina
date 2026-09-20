@@ -1,5 +1,5 @@
 CAP_5 = "m7Gppp"
-TAMANHO_CAuda_POLI_A = 100
+TAMANHO_CAUDA_POLI_A = 100
 BASES_RNA = {"A", "U", "G", "C"}
 CODONS_STOP = {"UAA", "UAG", "UGA"}
 # ============================================================
@@ -15,9 +15,10 @@ def validar_cap(mrna):
 
 def validar_cauda_poli_a(mrna):
     """Verifica se o mRNA termina com exatamente 100 adeninas consecutivas."""
-    cauda = "A" * TAMANHO_CAuda_POLI_A
 
-    return mrna.endswith(cauda)
+    quantidade_a_finais = len(mrna) - len(mrna.rstrip("A"))
+
+    return quantidade_a_finais == TAMANHO_CAUDA_POLI_A
 
 # ============================================================
 # SEPARAÇÃO DA CAP
@@ -35,7 +36,7 @@ def remover_cap(mrna):
 def remover_cauda_poli_a(sequencia):
     """ Remove os 100 A da cauda poli-A."""
 
-    return sequencia[:-TAMANHO_CAuda_POLI_A]
+    return sequencia[:-TAMANHO_CAUDA_POLI_A]
 
 # ============================================================
 # VALIDAÇÃO DAS BASES DO RNA
