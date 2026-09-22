@@ -1,6 +1,6 @@
-from validacao import validar_mrna
-from traducao import traduzir
-from modelos import ResultadoProcessamento
+from backend.validacao import validar_mrna
+from backend.traducao import traduzir
+from backend.modelos import ResultadoProcessamento
 
 # PROCESSAMENTO DE UM ÚNICO mRNA
 
