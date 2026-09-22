@@ -2,12 +2,16 @@ CAP_5 = "m7Gppp"
 TAMANHO_CAUDA_POLI_A = 100
 BASES_RNA = {"A", "U", "G", "C"}
 CODONS_STOP = {"UAA", "UAG", "UGA"}
+
+
 # ============================================================
 # VALIDAÇÃO DA CAP 5'
 # ============================================================
+
 def validar_cap(mrna):
-    """Verifica se o mRNA começa exatamente com m7Gppp"""
+    """Verifica se o mRNA começa exatamente com m7Gppp."""
     return mrna.startswith(CAP_5)
+
 
 # ============================================================
 # VALIDAÇÃO DA CAUDA POLI-A
@@ -20,6 +24,7 @@ def validar_cauda_poli_a(mrna):
 
     return quantidade_a_finais == TAMANHO_CAUDA_POLI_A
 
+
 # ============================================================
 # SEPARAÇÃO DA CAP
 # ============================================================
@@ -29,23 +34,27 @@ def remover_cap(mrna):
 
     return mrna[len(CAP_5):]
 
+
 # ============================================================
 # SEPARAÇÃO DA CAUDA POLI-A
 # ============================================================
 
 def remover_cauda_poli_a(sequencia):
-    """ Remove os 100 A da cauda poli-A."""
+    """Remove os 100 A da cauda poli-A."""
 
     return sequencia[:-TAMANHO_CAUDA_POLI_A]
+
 
 # ============================================================
 # VALIDAÇÃO DAS BASES DO RNA
 # ============================================================
 
 def validar_bases_rna(sequencia):
-    """Verifica se a sequência contém somente: A U G C"""
+    """Verifica se a sequência contém somente A, U, G e C."""
 
     return all(base in BASES_RNA for base in sequencia)
+
+
 # ============================================================
 # LOCALIZAÇÃO DO START
 # ============================================================
@@ -54,12 +63,17 @@ def encontrar_start(sequencia):
     """Localiza o primeiro códon AUG."""
 
     return sequencia.find("AUG")
+
+
 # ============================================================
 # LOCALIZAÇÃO DO STOP EM FASE
 # ============================================================
 
 def encontrar_stop_em_fase(sequencia, inicio):
-    """Procura o primeiro códon STOP no mesmo quadro de leitura iniciado pelo AUG."""
+    """
+    Procura o primeiro códon STOP no mesmo quadro de leitura
+    iniciado pelo AUG.
+    """
 
     for posicao in range(inicio, len(sequencia) - 2, 3):
 
@@ -69,18 +83,26 @@ def encontrar_stop_em_fase(sequencia, inicio):
             return posicao, codon
 
     return -1, None
+
+
 # ============================================================
 # VERIFICAÇÃO DE STOP FORA DE FASE
 # ============================================================
 
 def existe_stop_fora_de_fase(sequencia, inicio):
-    """Verifica se existe algum códon STOP depois do AUG,
-    mas fora do quadro de leitura iniciado pelo AUG.
-    Isso ajuda a diferenciar: BUG - STOP ausente de  BUG - quadro de leitura"""
+    """
+    Procura um STOP deslocado do quadro de leitura.
 
-    for posicao in range(inicio + 1, len(sequencia) - 2):
+    A busca começa depois dos três primeiros códons da região
+    iniciada pelo AUG para evitar interpretar combinações
+    sobrepostas iniciais como um STOP funcional deslocado.
+    """
 
-        # Se estiver no quadro correto, não é fora de fase.
+    inicio_busca = inicio + 9
+
+    for posicao in range(inicio_busca, len(sequencia) - 2):
+
+        # Se estiver no quadro correto, não é STOP fora de fase.
         if (posicao - inicio) % 3 == 0:
             continue
 
@@ -90,25 +112,34 @@ def existe_stop_fora_de_fase(sequencia, inicio):
             return True
 
     return False
+
+
 # ============================================================
 # VALIDAÇÃO DO QUADRO DE LEITURA
 # ============================================================
 
 def validar_quadro_leitura(inicio, posicao_stop):
-    """Verifica se o STOP está no mesmo quadro de leitura
-    do AUG. A distância entre START e STOP deve ser múltipla de 3."""
+    """
+    Verifica se o STOP está no mesmo quadro de leitura do AUG.
+    A distância entre START e STOP deve ser múltipla de 3.
+    """
 
     if inicio == -1 or posicao_stop == -1:
         return False
 
     return (posicao_stop - inicio) % 3 == 0
+
+
 # ============================================================
 # VALIDAÇÃO COMPLETA DO mRNA
 # ============================================================
+
 def validar_mrna(mrna):
+
     # --------------------------------------------------------
     # 1. VALIDAR CAP 5'
     # --------------------------------------------------------
+
     if not validar_cap(mrna):
 
         return {
@@ -116,6 +147,7 @@ def validar_mrna(mrna):
             "resultado": "BUG - CAP 5'",
             "proteina": None
         }
+
     # --------------------------------------------------------
     # 2. VALIDAR CAUDA POLI-A
     # --------------------------------------------------------
@@ -181,7 +213,6 @@ def validar_mrna(mrna):
 
     if posicao_stop == -1:
 
-        # Existe STOP, mas fora do quadro?
         if existe_stop_fora_de_fase(sequencia, inicio):
 
             return {
@@ -190,7 +221,6 @@ def validar_mrna(mrna):
                 "proteina": None
             }
 
-        # Não existe STOP para terminar a tradução.
         return {
             "status": "ERRO",
             "resultado": "BUG - STOP ausente",
