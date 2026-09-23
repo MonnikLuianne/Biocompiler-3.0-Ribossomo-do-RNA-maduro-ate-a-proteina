@@ -2,7 +2,7 @@ from backend.processamento import processar_arquivo, salvar_resultados
 
 
 def main():
-    caminho_entrada = "dados/entrada.txt"
+    caminho_entrada = "dados/entradas_vindas_do_biocompiler_2.0.txt"
     caminho_saida = "dados/resultados.txt"
 
     resultados = processar_arquivo(caminho_entrada)
