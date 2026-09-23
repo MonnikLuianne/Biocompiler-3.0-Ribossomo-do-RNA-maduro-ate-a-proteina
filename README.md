@@ -1,25 +1,21 @@
 BioCompiler 3.0 — Ribossomo / Protein Translator
 
-📌 Sobre o projeto
+Projeto desenvolvido para a disciplina de Tópicos em Bioinformática, representando a terceira etapa do fluxo BioCompiler.
 
-O BioCompiler 3.0 — Ribossomo / Protein Translator é a terceira etapa do projeto BioCompiler, desenvolvido para a disciplina de Tópicos em Bioinformática.
-
-Nesta fase, o objetivo é simular de forma didática o processo de tradução de um mRNA maduro em uma sequência de aminoácidos, reproduzindo o papel do ribossomo.
-
-O sistema recebe mRNAs maduros produzidos pelo BioCompiler 2.0, valida sua estrutura, identifica a região codificante, realiza a leitura dos códons e gera a proteína correspondente quando a entrada é válida.
+O BioCompiler 3.0 recebe um mRNA maduro produzido pelo BioCompiler 2.0 e simula, de forma didática, sua tradução em uma sequência de aminoácidos.
 
 🧬 Fluxo do BioCompiler
 
 BioCompiler 1.0
 DNA → pré-mRNA
-        ↓
+
 BioCompiler 2.0
 pré-mRNA → mRNA maduro
-        ↓
+
 BioCompiler 3.0
 mRNA maduro → proteína
 
-No BioCompiler 3.0, o fluxo principal é:
+Nesta etapa, o Ribossomo realiza:
 
 mRNA maduro
     ↓
@@ -29,7 +25,7 @@ Validar cauda poli-A
     ↓
 Validar bases A/U/G/C
     ↓
-Localizar primeiro AUG
+Localizar o primeiro AUG
     ↓
 Ler códons em trincas
     ↓
@@ -39,153 +35,77 @@ Traduzir códons
     ↓
 Gerar proteína
 
-⚙️ Funcionalidades
+🎯 Objetivo
 
-O sistema é capaz de:
+O programa deve:
 
-Ler um ou vários mRNAs maduros;
+receber um ou mais mRNAs maduros;
 
-Converter automaticamente a saída do BioCompiler 2.0 para o formato utilizado pelo Ribossomo;
+validar sua estrutura;
 
-Validar a presença da CAP 5' (m7Gppp);
+identificar a região codificante;
 
-Validar a cauda poli-A com exatamente 100 adeninas;
+localizar o primeiro códon de iniciação AUG;
 
-Validar se a sequência contém somente as bases A, U, G e C;
+realizar a leitura em grupos de três nucleotídeos;
 
-Localizar o primeiro códon de iniciação AUG;
+localizar o primeiro códon STOP em fase;
 
-Ler a região codificante em grupos de três nucleotídeos;
+converter os códons em aminoácidos;
 
-Localizar o primeiro códon STOP em fase:
+gerar a sequência proteica quando a entrada for válida;
+
+emitir um diagnóstico quando houver erro.
+
+A tradução termina na geração da sequência de aminoácidos. O projeto não simula dobramento proteico, modificações pós-traducionais ou destino celular da proteína.
+
+⚙️ Regras implementadas
+
+CAP 5'
+
+A sequência deve começar exatamente com:
+
+m7Gppp
+
+Cauda poli-A
+
+A extremidade 3' deve possuir exatamente 100 adeninas consecutivas.
+
+Bases válidas
+
+Após a remoção da CAP e da cauda poli-A, a sequência deve conter somente:
+
+A U G C
+
+START
+
+A tradução começa no primeiro AUG encontrado.
+
+Além de iniciar a tradução, AUG codifica:
+
+Met
+
+Leitura
+
+A partir do START, a sequência é lida de 3 em 3 bases.
+
+Exemplo:
+
+AUG | GCU | AAA | CCG | UAA
+
+STOP
+
+Os códons de parada são:
 
 UAA
-
 UAG
-
 UGA
 
-Traduzir os códons utilizando o código genético;
+Eles encerram a tradução e não adicionam aminoácidos à proteína.
 
-Representar aminoácidos pelo código de três letras;
+Representação dos aminoácidos
 
-Gerar a proteína no formato:
-
-Met-Ala-Lys-Pro
-
-Identificar erros estruturais no mRNA;
-
-Processar várias entradas em lote;
-
-Exibir os resultados em uma interface gráfica desenvolvida com Streamlit;
-
-Exportar os resultados em arquivo .txt.
-
-🧪 Casos reconhecidos
-
-O sistema reconhece os seguintes casos:
-
-Caso
-
-Situação
-
-Resultado
-
-1
-
-mRNA válido e traduzível
-
-CORRETO
-
-2
-
-CAP 5' ausente ou incorreta
-
-BUG - CAP 5'
-
-3
-
-AUG ausente
-
-BUG - START ausente
-
-4
-
-STOP em fase ausente
-
-BUG - STOP ausente
-
-5
-
-Região incompatível com o quadro de leitura
-
-BUG - quadro de leitura
-
-6
-
-Cauda poli-A inválida
-
-BUG - cauda poli-A
-
-📁 Estrutura do projeto
-
-Biocompiler-3.0-Ribossomo-do-RNA-maduro-ate-a-proteina/
-│
-├── app.py
-├── requirements.txt
-│
-├── backend/
-│   ├── __init__.py
-│   ├── main.py
-│   ├── conversao.py
-│   ├── processamento.py
-│   ├── validacao.py
-│   ├── traducao.py
-│   └── modelos.py
-│
-├── dados/
-│   ├── entradas_vindas_do_biocompiler_2.0.txt
-│   ├── entrada_ribossomo.txt
-│   └── resultados.txt
-│
-└── assets/
-    └── imagem de fundo da interface
-
-A organização exata da pasta assets pode variar de acordo com o nome utilizado para a imagem de fundo.
-
-🧩 Organização do backend
-
-validacao.py
-
-Responsável por validar a estrutura do mRNA.
-
-Verifica:
-
-CAP 5';
-
-cauda poli-A;
-
-bases válidas;
-
-START;
-
-STOP;
-
-quadro de leitura.
-
-traducao.py
-
-Responsável pela tradução da região codificante.
-
-Contém:
-
-estrutura de dados com o código genético;
-
-códons STOP;
-
-função que percorre a sequência de 3 em 3;
-
-conversão dos códons em aminoácidos.
+Os aminoácidos são representados pelo código de três letras.
 
 Exemplo:
 
@@ -197,9 +117,132 @@ Resultado:
 
 Met-Ala-Lys-Pro
 
-modelos.py
+🧪 Casos reconhecidos
 
-Define a estrutura utilizada para representar cada resultado processado.
+Caso
+
+Situação
+
+Resultado
+
+1
+
+mRNA maduro válido e traduzível
+
+CORRETO
+
+2
+
+CAP 5' ausente ou diferente de m7Gppp
+
+BUG - CAP 5'
+
+3
+
+Códon de iniciação AUG ausente
+
+BUG - START ausente
+
+4
+
+STOP em fase ausente
+
+BUG - STOP ausente
+
+5
+
+Região codificante incompatível com leitura em trincas
+
+BUG - quadro de leitura
+
+6
+
+Cauda poli-A ausente, alterada ou diferente de 100 A
+
+BUG - cauda poli-A
+
+O backend também valida caracteres inválidos na região de RNA e, nesse caso, retorna:
+
+BUG - sequência RNA inválida
+
+📁 Estrutura atual do projeto
+
+Biocompiler-3.0-Ribossomo-do-RNA-maduro-ate-a-proteina/
+│
+├── app.py
+├── README.md
+├── plano-de-fundo-do-dia-nacional-da-ciencia_23-2149283127.avif
+│
+├── backend/
+│   ├── conversao.py
+│   ├── main.py
+│   ├── modelos.py
+│   ├── processamento.py
+│   ├── traducao.py
+│   └── validacao.py
+│
+└── dados/
+    ├── entradas_vindas_do_biocompiler_2.0.txt
+    ├── entrada_ribossomo.txt
+    └── resultados.txt
+
+🧩 Organização do backend
+
+backend/conversao.py
+
+Converte a saída do BioCompiler 2.0 para o formato utilizado internamente pelo Ribossomo.
+
+O arquivo vindo do BioCompiler 2.0 possui campos separados por ;, incluindo:
+
+linha;status;resultado;mRNA_maduro
+
+A conversão mantém apenas os registros em que:
+
+status = OK
+
+e em que:
+
+mRNA_maduro != NÃO GERADO
+
+Os mRNAs válidos são então gravados em:
+
+dados/entrada_ribossomo.txt
+
+com uma sequência por linha.
+
+backend/validacao.py
+
+Responsável pela validação estrutural do mRNA.
+
+Verifica:
+
+CAP 5';
+
+cauda poli-A;
+
+bases A/U/G/C;
+
+primeiro AUG;
+
+STOP em fase;
+
+quadro de leitura.
+
+Quando o mRNA é válido, também fornece a região codificante para a etapa de tradução.
+
+backend/traducao.py
+
+Contém o código genético utilizado pelo programa e transforma a região codificante em aminoácidos.
+
+A leitura é feita em trincas e termina ao encontrar:
+
+UAA
+UAG
+UGA
+
+backend/modelos.py
+
+Define a estrutura utilizada para representar cada resultado do processamento.
 
 Entre os dados armazenados estão:
 
@@ -221,109 +264,75 @@ quadro de leitura;
 
 cauda poli-A;
 
-estado da tradução.
+status da tradução.
 
-processamento.py
+backend/processamento.py
 
-É responsável por integrar as etapas do backend.
+Integra validação, tradução e geração dos resultados.
 
-Fluxo:
+Possui funções para:
 
-mRNA
- ↓
-validacao.py
- ↓
-traducao.py
- ↓
-modelos.py
- ↓
-resultado
+processar um único mRNA;
 
-Também realiza:
+processar todas as entradas de um arquivo;
 
-processamento de uma única entrada;
+salvar os resultados em arquivo texto.
 
-processamento em lote;
-
-exportação do arquivo de resultados.
-
-conversao.py
-
-Converte a saída do BioCompiler 2.0 para o formato esperado pelo Ribossomo.
-
-Exemplo de saída do BioCompiler 2.0:
-
-linha;status;resultado;mRNA_maduro
-1;ERRO;BUG - sítio 3' ausente;NÃO GERADO
-2;OK;CORRETO;m7Gppp...AAAAAAAA
-
-Após a conversão:
-
-m7Gppp...AAAAAAAA
-
-Somente registros com status = OK e mRNA realmente gerado são encaminhados ao Ribossomo.
-
-main.py
+backend/main.py
 
 Executa o fluxo completo do backend:
 
-BioCompiler 2.0
-      ↓
-conversão
-      ↓
-entrada do Ribossomo
-      ↓
+saída do BioCompiler 2.0
+        ↓
+conversao.py
+        ↓
+entrada_ribossomo.txt
+        ↓
+processamento
+        ↓
 validação
-      ↓
+        ↓
 tradução
-      ↓
-relatório
-      ↓
+        ↓
 resultados.txt
 
-🖥️ Interface gráfica
+A conversão é executada automaticamente antes do processamento.
 
-A interface foi desenvolvida utilizando Streamlit.
+📥 Entrada
 
-Ela apresenta:
+Saída recebida do BioCompiler 2.0
 
-visão geral do Ribossomo / Protein Translator;
+O arquivo utilizado pelo backend é:
 
-métricas das entradas;
+dados/entradas_vindas_do_biocompiler_2.0.txt
 
-execução do processamento;
+Ele possui registros como:
 
-tabela de resultados;
+linha;status;resultado;mRNA_maduro
+1;ERRO;...;NÃO GERADO
+2;OK;CORRETO;m7Gppp...AAAAAAAA
 
-detalhamento individual das entradas;
+Somente os registros que realmente geraram um mRNA maduro são encaminhados para a etapa do Ribossomo.
 
-diagnóstico dos erros;
+Entrada interna do Ribossomo
 
-informações sobre CAP, START, STOP, quadro de leitura e cauda poli-A;
+Após a conversão, é gerado:
 
-proteína gerada;
+dados/entrada_ribossomo.txt
 
-opção de download dos resultados.
+No formato:
 
-A interface utiliza uma identidade visual própria do BioCompiler 3.0, mantendo inspiração visual nas fases anteriores do projeto.
+m7GpppSEQUENCIA_DE_RNA + cauda poli-A
 
-📥 Formato de entrada do Ribossomo
+com um mRNA por linha.
 
-O formato esperado internamente é:
+📤 Saída
 
-m7GpppSEQUENCIA_DE_RNAAAAAAAAA...AAAAAAAA
+O resultado final é salvo em:
 
-Cada linha representa um mRNA independente.
+dados/resultados.txt
 
-A cauda poli-A deve conter exatamente 100 adeninas consecutivas.
-
-Exemplo conceitual:
-
-m7GpppCCAUGGCUAAACCGUAAGGAAAAAAAA...(100 A)
-
-📤 Formato da saída
-
-O arquivo de resultados utiliza campos separados por ;.
+com o cabeçalho:
 
 linha;status;resultado;proteina
 
@@ -333,9 +342,41 @@ Exemplo:
 2;ERRO;BUG - CAP 5';NÃO GERADA
 3;ERRO;BUG - START ausente;NÃO GERADA
 
+🖥️ Interface gráfica
+
+A interface foi desenvolvida com Streamlit e utiliza a imagem:
+
+plano-de-fundo-do-dia-nacional-da-ciencia_23-2149283127.avif
+
+como plano de fundo.
+
+A aplicação apresenta:
+
+visão geral do Ribossomo;
+
+métricas das entradas;
+
+tabela de resultados;
+
+detalhamento individual;
+
+diagnóstico de cada etapa;
+
+destaque visual de CAP, START, STOP e cauda poli-A;
+
+proteína gerada quando aplicável;
+
+download dos resultados.
+
+A interface consegue interpretar:
+
+o formato oficial do Ribossomo, com um mRNA por linha;
+
+a saída do BioCompiler 2.0, filtrando automaticamente os registros que realmente geraram mRNA maduro.
+
 🚀 Como executar
 
-1. Clone o repositório
+1. Clonar o repositório
 
 git clone https://github.com/MonnikLuianne/Biocompiler-3.0-Ribossomo-do-RNA-maduro-ate-a-proteina.git
 
@@ -343,23 +384,25 @@ Entre na pasta:
 
 cd Biocompiler-3.0-Ribossomo-do-RNA-maduro-ate-a-proteina
 
-2. Instale as dependências
+2. Instalar as dependências da interface
 
-python -m pip install -r requirements.txt
+Atualmente, as dependências externas utilizadas pelo front são:
 
-3. Executar apenas o backend
+python -m pip install streamlit pandas
+
+3. Executar o backend completo
 
 Na raiz do projeto:
 
 python -m backend.main
 
-O programa realiza automaticamente:
+Esse comando:
 
-conversão
-→ processamento
-→ validação
-→ tradução
-→ geração de resultados
+converte a saída do BioCompiler 2.0
+→ gera entrada_ribossomo.txt
+→ processa os mRNAs
+→ exibe os resultados
+→ gera resultados.txt
 
 4. Executar a interface gráfica
 
@@ -367,31 +410,41 @@ Na raiz do projeto:
 
 python -m streamlit run app.py
 
-O Streamlit abrirá a aplicação no navegador.
+📊 Conjunto de dados atualmente presente no projeto
 
-🧠 Exemplo de tradução
+No arquivo atualmente utilizado como saída do BioCompiler 2.0 existem 40 registros.
 
-Entrada codificante:
+Desses registros, 10 possuem status = OK e um mRNA_maduro efetivamente gerado. Portanto, são esses 10 que seguem para o Ribossomo.
 
-AUGGCUAAACCGUAA
+Os demais registros não são analisados pelo BioCompiler 3.0 porque não produziram um mRNA maduro na etapa anterior.
 
-Separação dos códons:
+No conjunto atual, os 10 mRNAs encaminhados ao Ribossomo não possuem o códon de iniciação AUG. Por isso, o resultado produzido para todos eles é:
 
-AUG | GCU | AAA | CCG | UAA
+BUG - START ausente
 
-Tradução:
+Esse comportamento corresponde aos dados atuais e não representa erro de execução do Ribossomo.
 
-AUG → Met
-GCU → Ala
-AAA → Lys
-CCG → Pro
-UAA → STOP
+🧠 Resumo do funcionamento
 
-Proteína:
-
-Met-Ala-Lys-Pro
-
-O códon STOP encerra a tradução e não é adicionado à sequência de aminoácidos.
+BioCompiler 2.0
+      ↓
+seleciona mRNAs realmente gerados
+      ↓
+BioCompiler 3.0
+      ↓
+CAP válida?
+      ↓
+100 A na cauda?
+      ↓
+bases válidas?
+      ↓
+AUG existe?
+      ↓
+STOP em fase existe?
+      ↓
+traduz códons
+      ↓
+proteína
 
 🛠️ Tecnologias utilizadas
 
@@ -401,37 +454,11 @@ Streamlit
 
 Pandas
 
-Dataclasses
+dataclasses
 
-CSV
+módulo csv
 
-Git / GitHub
-
-🎯 Objetivo didático
-
-O objetivo do projeto é representar computacionalmente o processo de tradução molecular, associando conceitos de Bioinformática e Biologia Molecular a técnicas de programação.
-
-O programa não simula:
-
-dobramento proteico;
-
-modificações pós-traducionais;
-
-transporte celular;
-
-destino celular da proteína.
-
-O processamento termina na geração da sequência de aminoácidos.
-
-👨‍💻 Execução resumida
-
-Para rodar o sistema completo pela interface:
-
-python -m streamlit run app.py
-
-Para testar somente o backend:
-
-python -m backend.main
+Git e GitHub
 
 📚 BioCompiler 3.0
 
